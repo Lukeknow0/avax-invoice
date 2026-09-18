@@ -13,6 +13,7 @@
 ---
 
 ## 已部署的 Fuji 演示
+- DApp：[Avax Invoice](https://lukeknow0.github.io/avax-invoice/)
 - 合约：[InvoiceRegistry on Snowtrace](https://testnet.snowtrace.io/address/0xBbF1Ff4085682F708e12B9c9b06EfbB268e78e05)
 - 完整的真实链上创建与支付证明见 [LIVE_DEMO.md](LIVE_DEMO.md)。
 
