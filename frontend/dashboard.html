@@ -3,82 +3,134 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>我的收款单仪表盘 - Avax Invoice</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
-  <style>
-    .badge-fuji { background: rgba(232, 65, 66, 0.1); border: 1px solid rgba(232, 65, 66, 0.3); color: #E84142; }
-    .btn-avax { background: #E84142; color: white; transition: all 0.2s; }
-    .btn-avax:hover { background: #d03536; }
-  </style>
+  <meta name="description" content="查看当前钱包在 Avalanche Fuji 测试网上创建的链上收款单与结算状态。" />
+  <meta name="theme-color" content="oklch(0.1492 0.0093 263.97)" />
+  <title>账单记录｜Avax Invoice</title>
+  <link rel="icon" type="image/png" href="assets/avalanche-logo.png" />
+  <link rel="stylesheet" href="design.css" />
+  <script src="assets/ethers.umd.min.js"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
-  <div class="bg-red-950/40 border-b border-red-800/30 text-xs py-2 px-4 text-center text-red-300">
-    <strong>Avalanche Fuji Testnet 示范系统</strong> · 仅支持测试资产，无真实经济价值
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <div id="testnet-banner" class="testnet-banner" data-od-id="testnet-banner">
+    <strong>Avalanche Fuji 测试网技术演示</strong> · 数据按需读取自链上 · 非法定税务发票
   </div>
 
-  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center font-bold text-white shadow-lg shadow-red-500/20">A</div>
-        <a href="index.html" class="font-bold text-lg tracking-tight hover:text-white">Avax Invoice</a>
-        <span class="badge-fuji text-[11px] px-2 py-0.5 rounded-full font-medium">Fuji 43113</span>
-      </div>
-      <div class="flex items-center space-x-4">
-        <nav class="hidden sm:flex space-x-2 text-sm">
-          <a href="index.html" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">首页</a>
-          <a href="create.html" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">新建收款单</a>
-          <a href="dashboard.html" class="px-3 py-1.5 rounded-lg text-white bg-slate-800 font-medium">我的账单</a>
-        </nav>
-        <div id="walletBox">
-          <button id="connectBtn" class="btn-avax text-sm font-medium px-4 py-2 rounded-xl shadow-md">连接钱包</button>
+  <header class="site-header" data-od-id="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="index.html" aria-label="返回 Avax Invoice 首页" data-od-id="brand-link">
+        <span class="brand-mark"><img src="assets/avalanche-logo.png" width="256" height="256" alt="Avalanche 标识" /></span>
+        <span class="brand-copy">
+          <span class="brand-name">Avax Invoice</span>
+          <span class="brand-subtitle">Invoice protocol</span>
+        </span>
+      </a>
+      <nav class="primary-nav" aria-label="主导航" data-od-id="primary-navigation">
+        <a class="nav-link" href="index.html">首页</a>
+        <a class="nav-link" href="create.html">创建收款单</a>
+        <a class="nav-link" href="dashboard.html" aria-current="page">账单记录</a>
+      </nav>
+      <div class="nav-actions">
+        <span id="networkStatus" class="network-pill" aria-label="目标网络：Fuji 测试网，链 ID 43113"><span class="network-dot"></span>Fuji · 43113</span>
+        <div id="walletBox" data-od-id="wallet-control">
+          <button id="connectBtn" class="btn-primary" type="button" data-od-id="connect-wallet-button">
+            <span>连接钱包</span>
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 7.5V6a2 2 0 0 1 2-2h8.5A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-8A2 2 0 0 1 6 7.5h12.5"/><path d="M15 12h5"/></svg>
+            </span>
+          </button>
         </div>
       </div>
     </div>
   </header>
 
-  <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-10">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+  <main id="main-content" class="page-main">
+    <section class="dashboard-header reveal is-visible" data-od-id="dashboard-header">
       <div>
-        <h1 class="text-2xl font-bold text-white">我发起的收款单</h1>
-        <p class="text-slate-400 text-xs mt-1">从链上实时读取当前连接地址创建的所有历史对账单</p>
+        <span class="eyebrow">链上记录 · 按需读取</span>
+        <h1 class="page-heading" data-od-id="dashboard-heading">账单记录</h1>
+        <p class="page-lede">连接钱包后，页面会读取这个地址创建的全部收款单。筛选只发生在本地，不改变链上数据。</p>
       </div>
-      <a href="create.html" class="btn-avax text-xs font-semibold px-4 py-2.5 rounded-xl shadow-md flex items-center space-x-1 self-start sm:self-auto">
-        <span>+ 新建收款单</span>
+      <a class="btn-primary" href="create.html" data-od-id="dashboard-create-cta">
+        <span>创建收款单</span>
+        <span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></span>
       </a>
-    </div>
+    </section>
 
-    <!-- Filter Bar -->
-    <div class="flex items-center space-x-2 mb-6 text-xs">
-      <button class="filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-white font-medium active-filter" data-filter="all">全部</button>
-      <button class="filter-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white border border-slate-800" data-filter="pending">待付款</button>
-      <button class="filter-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white border border-slate-800" data-filter="paid">已结清</button>
-    </div>
+    <section class="stats-grid reveal" data-delay="1" aria-label="账单摘要" data-od-id="dashboard-stats">
+      <article class="stat-card" data-od-id="stat-card-total">
+        <span class="metric-label">全部账单</span>
+        <div><span id="statTotal" class="stat-value">—</span><span class="stat-meta">当前连接地址</span></div>
+      </article>
+      <article class="stat-card" data-od-id="stat-card-pending">
+        <span class="metric-label">待付款</span>
+        <div><span id="statPending" class="stat-value">—</span><span class="stat-meta">仍可完成结算</span></div>
+      </article>
+      <article class="stat-card" data-od-id="stat-card-paid">
+        <span class="metric-label">已结清</span>
+        <div><span id="statPaid" class="stat-value">—</span><span class="stat-meta">已有链上回执</span></div>
+      </article>
+    </section>
 
-    <!-- List Container -->
-    <div id="dashboardLoading" class="hidden text-center py-16">
-      <div class="inline-block w-6 h-6 border-2 border-slate-700 border-t-red-500 rounded-full animate-spin mb-3"></div>
-      <p class="text-xs text-slate-400">正在查询当前账户的链上记录...</p>
-    </div>
+    <section class="reveal" data-delay="2" data-od-id="invoice-list-section" aria-labelledby="invoice-list-heading">
+      <div class="list-toolbar">
+        <h2 id="invoice-list-heading" class="list-title">链上明细</h2>
+        <div class="filter-group" aria-label="账单状态筛选" data-od-id="invoice-filter-group">
+          <button class="filter-btn active-filter" type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button class="filter-btn" type="button" data-filter="pending" aria-pressed="false">待付款</button>
+          <button class="filter-btn" type="button" data-filter="paid" aria-pressed="false">已结清</button>
+        </div>
+      </div>
 
-    <div id="noWalletNotice" class="text-center py-16 bg-slate-900/40 border border-slate-800 rounded-2xl p-6">
-      <div class="w-10 h-10 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3 text-sm">🔒</div>
-      <h3 class="text-sm font-semibold text-white mb-1">请先连接钱包</h3>
-      <p class="text-xs text-slate-400 mb-4">连接钱包后自动检索您发布过的收款单</p>
-    </div>
+      <div id="dashboardLoading" class="skeleton-grid hidden" role="status" aria-live="polite" aria-busy="true" aria-label="正在加载账单">
+        <div class="skeleton-card"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+      </div>
 
-    <div id="emptyNotice" class="hidden text-center py-16 bg-slate-900/40 border border-slate-800 rounded-2xl p-6">
-      <div class="w-10 h-10 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3 text-sm">📄</div>
-      <h3 class="text-sm font-semibold text-white mb-1">暂无收款单</h3>
-      <p class="text-xs text-slate-400 mb-4">您尚未在当前合约上创建过任何款项请求</p>
-      <a href="create.html" class="btn-avax text-xs font-semibold px-4 py-2 rounded-lg">创建第一笔</a>
-    </div>
+      <div id="noWalletNotice" class="state-panel" data-od-id="dashboard-no-wallet-state">
+        <span class="state-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><path d="M7 10V8a5 5 0 0 1 10 0v2M6 10h12v10H6z"/><path d="M12 14v2"/></svg>
+        </span>
+        <h3>连接钱包以读取账单</h3>
+        <p>我们只读取当前地址公开的链上记录，不会请求资产授权，也不会保存钱包信息。</p>
+        <button id="noticeConnectBtn" class="btn-secondary" type="button" data-od-id="empty-connect-wallet-button">
+          <span>连接当前钱包</span>
+          <span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M14 7l5 5-5 5"/></svg></span>
+        </button>
+      </div>
 
-    <div id="invoiceGrid" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Populated by JS -->
-    </div>
+      <div id="emptyNotice" class="state-panel hidden" data-od-id="dashboard-empty-state">
+        <span class="state-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5M10 13h5M10 17h5"/></svg>
+        </span>
+        <h3 id="emptyNoticeTitle">还没有收款单</h3>
+        <p id="emptyNoticeCopy">当前钱包尚未创建过收款请求。创建第一笔后，它会出现在这里。</p>
+        <a id="emptyNoticeAction" class="btn-secondary" href="create.html">
+          <span class="button-label">创建第一笔</span>
+          <span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M14 7l5 5-5 5"/></svg></span>
+        </a>
+      </div>
+
+      <div id="invoiceGrid" class="invoice-grid hidden" data-od-id="invoice-grid"></div>
+    </section>
   </main>
 
+  <footer class="site-footer" data-od-id="site-footer">
+    <span>Avax Invoice · Fuji 测试网演示</span>
+    <nav class="footer-links" aria-label="页脚链接">
+      <a href="https://github.com/Lukeknow0/avax-invoice" target="_blank" rel="noreferrer">GitHub ↗</a>
+      <a href="https://testnet.snowtrace.io/address/0xBbF1Ff4085682F708e12B9c9b06EfbB268e78e05" target="_blank" rel="noreferrer">合约 ↗</a>
+    </nav>
+  </footer>
+
+  <nav class="mobile-dock" aria-label="移动端导航" data-od-id="mobile-navigation">
+    <a class="mobile-nav-link" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><path d="m4 10 8-6 8 6v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>首页</a>
+    <a class="mobile-nav-link" href="create.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>创建</a>
+    <a class="mobile-nav-link" href="dashboard.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><path d="M5 5h14v5H5zM5 14h14v5H5z"/></svg>记录</a>
+  </nav>
+
+  <div id="toastRegion" class="toast-region" role="status" aria-live="polite"></div>
   <script type="module" src="app.js"></script>
 </body>
 </html>

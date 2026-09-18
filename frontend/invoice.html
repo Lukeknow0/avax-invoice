@@ -3,124 +3,167 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>账单详情与结算 - Avax Invoice</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
-  <style>
-    .badge-fuji { background: rgba(232, 65, 66, 0.1); border: 1px solid rgba(232, 65, 66, 0.3); color: #E84142; }
-    .btn-avax { background: #E84142; color: white; transition: all 0.2s; }
-    .btn-avax:hover { background: #d03536; }
-    .btn-avax:disabled { background: #475569; cursor: not-allowed; }
-  </style>
+  <meta name="description" content="查看并支付 Avalanche Fuji 测试网上的 Avax Invoice 链上收款单。" />
+  <meta name="theme-color" content="oklch(0.1492 0.0093 263.97)" />
+  <title>账单详情与结算｜Avax Invoice</title>
+  <link rel="icon" type="image/png" href="assets/avalanche-logo.png" />
+  <link rel="stylesheet" href="design.css" />
+  <script src="assets/ethers.umd.min.js"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
-  <div class="bg-red-950/40 border-b border-red-800/30 text-xs py-2 px-4 text-center text-red-300">
-    <strong>Avalanche Fuji Testnet 示范系统</strong> · 仅支持测试资产，无真实经济价值
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <div id="testnet-banner" class="testnet-banner" data-od-id="testnet-banner">
+    <strong>Avalanche Fuji 测试网技术演示</strong> · 仅使用测试 AVAX · 非法定税务发票
   </div>
 
-  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center font-bold text-white shadow-lg shadow-red-500/20">A</div>
-        <a href="index.html" class="font-bold text-lg tracking-tight hover:text-white">Avax Invoice</a>
-        <span class="badge-fuji text-[11px] px-2 py-0.5 rounded-full font-medium">Fuji 43113</span>
-      </div>
-      <div class="flex items-center space-x-4">
-        <nav class="hidden sm:flex space-x-2 text-sm">
-          <a href="index.html" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">首页</a>
-          <a href="create.html" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">新建收款单</a>
-          <a href="dashboard.html" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">我的账单</a>
-        </nav>
-        <div id="walletBox">
-          <button id="connectBtn" class="btn-avax text-sm font-medium px-4 py-2 rounded-xl shadow-md">连接钱包</button>
+  <header class="site-header" data-od-id="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="index.html" aria-label="返回 Avax Invoice 首页" data-od-id="brand-link">
+        <span class="brand-mark"><img src="assets/avalanche-logo.png" width="256" height="256" alt="Avalanche 标识" /></span>
+        <span class="brand-copy">
+          <span class="brand-name">Avax Invoice</span>
+          <span class="brand-subtitle">Invoice protocol</span>
+        </span>
+      </a>
+      <nav class="primary-nav" aria-label="主导航" data-od-id="primary-navigation">
+        <a class="nav-link" href="index.html">首页</a>
+        <a class="nav-link" href="create.html">创建收款单</a>
+        <a class="nav-link" href="dashboard.html">账单记录</a>
+      </nav>
+      <div class="nav-actions">
+        <span id="networkStatus" class="network-pill" aria-label="目标网络：Fuji 测试网，链 ID 43113"><span class="network-dot"></span>Fuji · 43113</span>
+        <div id="walletBox" data-od-id="wallet-control">
+          <button id="connectBtn" class="btn-primary" type="button" data-od-id="connect-wallet-button">
+            <span>连接钱包</span>
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 7.5V6a2 2 0 0 1 2-2h8.5A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-8A2 2 0 0 1 6 7.5h12.5"/><path d="M15 12h5"/></svg>
+            </span>
+          </button>
         </div>
       </div>
     </div>
   </header>
 
-  <main class="flex-1 max-w-xl mx-auto w-full px-4 py-10">
-    <div id="loadingState" class="text-center py-16">
-      <div class="inline-block w-8 h-8 border-4 border-slate-700 border-t-red-500 rounded-full animate-spin mb-4"></div>
-      <p class="text-sm text-slate-400">正在从 Avalanche Fuji 节点拉取真实链上账单...</p>
+  <main id="main-content" class="page-main">
+    <a class="back-link" href="dashboard.html" data-od-id="back-dashboard-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
+      返回账单记录
+    </a>
+
+    <div id="loadingState" class="skeleton-grid" role="status" aria-live="polite" aria-busy="true" aria-label="正在从 Fuji 读取账单">
+      <div class="skeleton-card"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
     </div>
 
-    <div id="errorState" class="hidden text-center py-12 bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-      <div class="w-12 h-12 rounded-full bg-red-950/80 border border-red-800 text-red-400 flex items-center justify-center mx-auto mb-4 text-xl">✕</div>
-      <h3 class="text-lg font-bold text-white mb-2">未检索到该收款单</h3>
-      <p id="errorMsg" class="text-xs text-slate-400 mb-6">账单可能不存在或已被非法重置。</p>
-      <a href="index.html" class="btn-avax text-xs font-semibold px-4 py-2.5 rounded-lg">返回首页</a>
-    </div>
-
-    <!-- Invoice Content -->
-    <div id="invoiceCard" class="hidden bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-      <div class="absolute -top-12 -right-12 w-36 h-36 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div class="flex items-center justify-between pb-6 border-b border-slate-800">
-        <div>
-          <span class="text-xs font-mono text-slate-400">INVOICE #<span id="invIdDisplay">--</span></span>
-          <h2 class="text-xl font-bold text-white mt-0.5">收款单凭据</h2>
-        </div>
-        <div id="statusBadgeContainer">
-          <!-- Populated by JS -->
-        </div>
+    <section id="errorState" class="state-panel hidden" role="alert" tabindex="-1" data-od-id="invoice-error-state">
+      <span class="state-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 17h.01"/></svg>
+      </span>
+      <h1 id="errorHeading">无法读取这张收款单</h1>
+      <p id="errorMsg">请检查链接中的账单编号，或稍后重新连接 Fuji 节点。</p>
+      <div class="state-actions">
+        <a id="invoiceRetryAction" class="btn-secondary" href="invoice.html">
+          <span>重新读取</span>
+          <span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M18 8a7 7 0 1 0 1 5M18 4v4h-4"/></svg></span>
+        </a>
+        <a class="btn-quiet" href="index.html">返回首页</a>
       </div>
+    </section>
 
-      <!-- Amount Section -->
-      <div class="py-6 text-center border-b border-slate-800/80">
-        <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold">应付款项</span>
-        <div class="text-4xl sm:text-5xl font-extrabold text-white mt-2 flex items-baseline justify-center space-x-2">
-          <span id="invAmount">0.00</span>
-          <span class="text-lg font-semibold text-red-500">AVAX</span>
-        </div>
-        <p class="text-xs text-slate-500 mt-2">测试代币 · 链上原子级直达收款账户</p>
-      </div>
-
-      <!-- Details List -->
-      <div class="py-6 space-y-4 text-xs">
-        <div class="flex justify-between items-center">
-          <span class="text-slate-400">收款方 (Payee)</span>
-          <span id="invPayee" class="font-mono text-slate-200 bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">--</span>
-        </div>
-        <div class="flex justify-between items-center">
-          <span class="text-slate-400">创建时间</span>
-          <span id="invCreatedAt" class="text-slate-200 font-mono">--</span>
-        </div>
-        <div id="payerRow" class="hidden flex justify-between items-center">
-          <span class="text-slate-400">付款方 (Payer)</span>
-          <span id="invPayer" class="font-mono text-slate-200 bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">--</span>
-        </div>
-        <div id="paidAtRow" class="hidden flex justify-between items-center">
-          <span class="text-slate-400">结算时间</span>
-          <span id="invPaidAt" class="text-slate-200 font-mono">--</span>
-        </div>
-      </div>
-
-      <!-- Action / Pay Section -->
-      <div id="actionBox" class="pt-2">
-        <button id="payNowBtn" disabled class="btn-avax w-full py-4 rounded-2xl font-bold text-base shadow-xl shadow-red-500/25 flex items-center justify-center space-x-2">
-          <span>确认并立即支付</span>
-        </button>
-        <div id="payStatus" class="hidden mt-3 p-3 rounded-xl text-xs"></div>
-      </div>
-
-      <!-- Verified Receipt Section -->
-      <div id="receiptBox" class="hidden pt-4 border-t border-slate-800/80 mt-6">
-        <div class="bg-emerald-950/30 border border-emerald-800/30 rounded-2xl p-4">
-          <div class="flex items-center space-x-2 text-emerald-400 font-semibold text-xs mb-2">
-            <span>✓ 链上真实结算完成</span>
+    <div id="invoiceCard" class="receipt-layout hidden" data-od-id="invoice-detail-layout">
+      <section class="double-bezel receipt-shell" data-od-id="invoice-receipt-card" aria-labelledby="invoice-title">
+        <div class="bezel-core">
+          <div class="receipt-top">
+            <div>
+              <span class="receipt-id">INVOICE #<span id="invIdDisplay">—</span></span>
+              <h1 id="invoice-title" class="receipt-title">链上收款凭证</h1>
+            </div>
+            <div id="statusBadgeContainer" aria-label="账单状态"></div>
           </div>
-          <p class="text-[11px] text-slate-300 leading-relaxed mb-3">
-            款项已由合约校验并一次性扣减转出至收款人地址。双方均可在区块浏览器调阅原始 Receipt。
-          </p>
-          <a id="snowtraceReceiptLink" href="#" target="_blank" class="text-xs text-red-400 hover:text-red-300 font-medium inline-flex items-center space-x-1">
-            <span>在 Snowtrace 调阅该凭证</span>
-            <span>↗</span>
-          </a>
+
+          <div class="receipt-amount">
+            <span class="receipt-label">应付金额</span>
+            <div class="receipt-amount-value"><span id="invAmount">0.00</span><small>AVAX</small></div>
+            <p class="receipt-note">Fuji 测试资产 · 合约仅接受与账单严格一致的金额</p>
+          </div>
+
+          <dl class="details-list">
+            <div class="detail-row">
+              <dt>收款地址</dt>
+              <dd id="invPayee" class="mono-value">—</dd>
+            </div>
+            <div class="detail-row">
+              <dt>创建时间</dt>
+              <dd id="invCreatedAt" class="mono-value">—</dd>
+            </div>
+            <div id="payerRow" class="detail-row hidden">
+              <dt>付款地址</dt>
+              <dd id="invPayer" class="mono-value">—</dd>
+            </div>
+            <div id="paidAtRow" class="detail-row hidden">
+              <dt>结算时间</dt>
+              <dd id="invPaidAt" class="mono-value">—</dd>
+            </div>
+          </dl>
+
+          <div id="actionBox" class="action-box">
+            <button id="payNowBtn" class="btn-primary btn-full" type="button" disabled data-od-id="pay-invoice-button">
+              <span class="button-label">读取账单中</span>
+              <span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M14 7l5 5-5 5"/></svg></span>
+            </button>
+            <p class="action-hint">点击后将唤起钱包。请确认网络为 Avalanche Fuji，并核对金额后再签名。</p>
+            <div id="payStatus" class="status-box hidden" role="status" aria-live="polite"></div>
+          </div>
+
+          <div id="receiptBox" class="receipt-box hidden">
+            <div class="verified-panel">
+              <strong>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+                链上结算已经完成
+              </strong>
+              <p>合约已校验金额并把测试 AVAX 直接转入收款地址。付款人、结算时间与状态均可公开核验。</p>
+              <a id="snowtraceReceiptLink" href="https://testnet.snowtrace.io" target="_blank" rel="noreferrer">前往 Snowtrace 调阅凭证 ↗</a>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <aside class="verification-rail" aria-label="验证说明" data-od-id="verification-rail">
+        <article class="rail-card" data-od-id="verification-card-contract">
+          <span class="card-kicker">验证路径</span>
+          <h3>不必信任这个页面</h3>
+          <p>页面展示的状态来自 Fuji RPC。你也可以在 Snowtrace 使用账单合约地址独立查询。</p>
+          <ul class="rail-list">
+            <li><span>网络</span><strong>Fuji C-Chain</strong></li>
+            <li><span>Chain ID</span><strong>43113</strong></li>
+            <li><span>托管方式</span><strong>Non-custodial</strong></li>
+          </ul>
+        </article>
+        <article class="rail-card" data-od-id="verification-card-safety">
+          <span class="card-kicker">签名前检查</span>
+          <h3>只确认三件事</h3>
+          <p>钱包网络是 Fuji、金额与页面一致、交易方法为 payInvoice。任何页面都不应索取助记词。</p>
+        </article>
+      </aside>
     </div>
   </main>
 
+  <footer class="site-footer" data-od-id="site-footer">
+    <span>Avax Invoice · Fuji 测试网演示</span>
+    <nav class="footer-links" aria-label="页脚链接">
+      <a href="https://github.com/Lukeknow0/avax-invoice" target="_blank" rel="noreferrer">GitHub ↗</a>
+      <a href="https://testnet.snowtrace.io/address/0xBbF1Ff4085682F708e12B9c9b06EfbB268e78e05" target="_blank" rel="noreferrer">合约 ↗</a>
+    </nav>
+  </footer>
+
+  <nav class="mobile-dock" aria-label="移动端导航" data-od-id="mobile-navigation">
+    <a class="mobile-nav-link" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><path d="m4 10 8-6 8 6v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>首页</a>
+    <a class="mobile-nav-link" href="create.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>创建</a>
+    <a class="mobile-nav-link" href="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><path d="M5 5h14v5H5zM5 14h14v5H5z"/></svg>记录</a>
+  </nav>
+
+  <div id="toastRegion" class="toast-region" role="status" aria-live="polite"></div>
   <script type="module" src="app.js"></script>
 </body>
 </html>
