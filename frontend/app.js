@@ -26,6 +26,11 @@ async function initWallet() {
     console.log("No web3 wallet detected");
     return;
   }
+  // If user explicitly disconnected in this session, do not auto-connect
+  if (sessionStorage.getItem("WALLET_MANUALLY_DISCONNECTED") === "true") {
+    renderWalletDisconnected();
+    return;
+  }
   provider = new ethers.BrowserProvider(window.ethereum);
   try {
     const accounts = await provider.listAccounts();
@@ -44,6 +49,7 @@ async function initWallet() {
       userAddress = null;
       renderWalletDisconnected();
     } else {
+      sessionStorage.removeItem("WALLET_MANUALLY_DISCONNECTED");
       location.reload();
     }
   });
@@ -53,7 +59,15 @@ async function initWallet() {
   });
 }
 
+export function disconnectWallet() {
+  userAddress = null;
+  signer = null;
+  sessionStorage.setItem("WALLET_MANUALLY_DISCONNECTED", "true");
+  renderWalletDisconnected();
+}
+
 export async function connectWallet() {
+  sessionStorage.removeItem("WALLET_MANUALLY_DISCONNECTED");
   if (!window.ethereum) {
     alert("未检测到 Web3 钱包，请在电脑端安装 Core Wallet 或 MetaMask 插件，或使用 Web3 浏览器打开！");
     return;
@@ -101,11 +115,17 @@ function renderWalletConnected(addr) {
   if (box) {
     const shortAddr = addr.slice(0, 6) + "..." + addr.slice(-4);
     box.innerHTML = `
-      <div class="flex items-center space-x-2 bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-mono">
-        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-        <span class="text-slate-200">${shortAddr}</span>
+      <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-2 bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span class="text-slate-200">${shortAddr}</span>
+        </div>
+        <button id="disconnectBtn" title="断开连接" class="px-2.5 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-red-600/60 hover:text-red-400 text-slate-400 text-xs transition">
+          断开
+        </button>
       </div>
     `;
+    document.getElementById("disconnectBtn")?.addEventListener("click", disconnectWallet);
   }
   // If on create.html, populate payee
   const payeeDisplay = document.getElementById("payeeDisplay");
@@ -128,6 +148,13 @@ function renderWalletDisconnected() {
     box.innerHTML = `<button id="connectBtn" class="btn-avax text-sm font-medium px-4 py-2 rounded-xl shadow-md">连接钱包</button>`;
     document.getElementById("connectBtn")?.addEventListener("click", connectWallet);
   }
+  const payeeDisplay = document.getElementById("payeeDisplay");
+  if (payeeDisplay) {
+    payeeDisplay.textContent = "请先连接钱包以自动填入您的收款地址...";
+    payeeDisplay.className = "bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-500 font-mono";
+  }
+  const submitCreateBtn = document.getElementById("submitCreateBtn");
+  if (submitCreateBtn) submitCreateBtn.disabled = true;
 }
 
 // ── Create Page Logic ────────────────────────────────────────────────────────
