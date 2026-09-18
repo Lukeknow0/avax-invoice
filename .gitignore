@@ -8,6 +8,8 @@ node_modules/
 artifacts/
 cache/
 typechain-types/
+contracts/types/
+frontend/.preview-server.log
 dist/
 
 # Local tooling/cache
