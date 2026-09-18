@@ -1,0 +1,22 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies and build outputs
+node_modules/
+artifacts/
+cache/
+typechain-types/
+dist/
+
+# Local tooling/cache
+.hardhat-cache/
+.sandbox-home/
+.npm-cache/
+.foundry/
+bin/
+foundry.tar.gz
+contracts/projects/
+.DS_Store
+

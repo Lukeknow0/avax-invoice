@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>账单详情与结算 - Avax Invoice</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+  <style>
+    .badge-fuji { background: rgba(232, 65, 66, 0.1); border: 1px solid rgba(232, 65, 66, 0.3); color: #E84142; }
+    .btn-avax { background: #E84142; color: white; transition: all 0.2s; }
+    .btn-avax:hover { background: #d03536; }
+    .btn-avax:disabled { background: #475569; cursor: not-allowed; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+  <div class="bg-red-950/40 border-b border-red-800/30 text-xs py-2 px-4 text-center text-red-300">
+    <strong>Avalanche Fuji Testnet 示范系统</strong> · 仅支持测试资产，无真实经济价值
+  </div>
+
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center font-bold text-white shadow-lg shadow-red-500/20">A</div>
+        <a href="index.html" class="font-bold text-lg tracking-tight hover:text-white">Avax Invoice</a>
+        <span class="badge-fuji text-[11px] px-2 py-0.5 rounded-full font-medium">Fuji 43113</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <nav class="hidden sm:flex space-x-2 text-sm">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">首页</a>
+          <a href="create.html" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">新建收款单</a>
+          <a href="dashboard.html" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">我的账单</a>
+        </nav>
+        <div id="walletBox">
+          <button id="connectBtn" class="btn-avax text-sm font-medium px-4 py-2 rounded-xl shadow-md">连接钱包</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-xl mx-auto w-full px-4 py-10">
+    <div id="loadingState" class="text-center py-16">
+      <div class="inline-block w-8 h-8 border-4 border-slate-700 border-t-red-500 rounded-full animate-spin mb-4"></div>
+      <p class="text-sm text-slate-400">正在从 Avalanche Fuji 节点拉取真实链上账单...</p>
+    </div>
+
+    <div id="errorState" class="hidden text-center py-12 bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+      <div class="w-12 h-12 rounded-full bg-red-950/80 border border-red-800 text-red-400 flex items-center justify-center mx-auto mb-4 text-xl">✕</div>
+      <h3 class="text-lg font-bold text-white mb-2">未检索到该收款单</h3>
+      <p id="errorMsg" class="text-xs text-slate-400 mb-6">账单可能不存在或已被非法重置。</p>
+      <a href="index.html" class="btn-avax text-xs font-semibold px-4 py-2.5 rounded-lg">返回首页</a>
+    </div>
+
+    <!-- Invoice Content -->
+    <div id="invoiceCard" class="hidden bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+      <div class="absolute -top-12 -right-12 w-36 h-36 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex items-center justify-between pb-6 border-b border-slate-800">
+        <div>
+          <span class="text-xs font-mono text-slate-400">INVOICE #<span id="invIdDisplay">--</span></span>
+          <h2 class="text-xl font-bold text-white mt-0.5">收款单凭据</h2>
+        </div>
+        <div id="statusBadgeContainer">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Amount Section -->
+      <div class="py-6 text-center border-b border-slate-800/80">
+        <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold">应付款项</span>
+        <div class="text-4xl sm:text-5xl font-extrabold text-white mt-2 flex items-baseline justify-center space-x-2">
+          <span id="invAmount">0.00</span>
+          <span class="text-lg font-semibold text-red-500">AVAX</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-2">测试代币 · 链上原子级直达收款账户</p>
+      </div>
+
+      <!-- Details List -->
+      <div class="py-6 space-y-4 text-xs">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">收款方 (Payee)</span>
+          <span id="invPayee" class="font-mono text-slate-200 bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">--</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">创建时间</span>
+          <span id="invCreatedAt" class="text-slate-200 font-mono">--</span>
+        </div>
+        <div id="payerRow" class="hidden flex justify-between items-center">
+          <span class="text-slate-400">付款方 (Payer)</span>
+          <span id="invPayer" class="font-mono text-slate-200 bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">--</span>
+        </div>
+        <div id="paidAtRow" class="hidden flex justify-between items-center">
+          <span class="text-slate-400">结算时间</span>
+          <span id="invPaidAt" class="text-slate-200 font-mono">--</span>
+        </div>
+      </div>
+
+      <!-- Action / Pay Section -->
+      <div id="actionBox" class="pt-2">
+        <button id="payNowBtn" disabled class="btn-avax w-full py-4 rounded-2xl font-bold text-base shadow-xl shadow-red-500/25 flex items-center justify-center space-x-2">
+          <span>确认并立即支付</span>
+        </button>
+        <div id="payStatus" class="hidden mt-3 p-3 rounded-xl text-xs"></div>
+      </div>
+
+      <!-- Verified Receipt Section -->
+      <div id="receiptBox" class="hidden pt-4 border-t border-slate-800/80 mt-6">
+        <div class="bg-emerald-950/30 border border-emerald-800/30 rounded-2xl p-4">
+          <div class="flex items-center space-x-2 text-emerald-400 font-semibold text-xs mb-2">
+            <span>✓ 链上真实结算完成</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed mb-3">
+            款项已由合约校验并一次性扣减转出至收款人地址。双方均可在区块浏览器调阅原始 Receipt。
+          </p>
+          <a id="snowtraceReceiptLink" href="#" target="_blank" class="text-xs text-red-400 hover:text-red-300 font-medium inline-flex items-center space-x-1">
+            <span>在 Snowtrace 调阅该凭证</span>
+            <span>↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

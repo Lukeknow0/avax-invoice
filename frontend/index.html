@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avax Invoice - 自由职业者极速收款凭证</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+  <style>
+    .badge-fuji { background: rgba(232, 65, 66, 0.1); border: 1px solid rgba(232, 65, 66, 0.3); color: #E84142; }
+    .btn-avax { background: #E84142; color: white; transition: all 0.2s; }
+    .btn-avax:hover { background: #d03536; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+  <div class="bg-red-950/40 border-b border-red-800/30 text-xs py-2 px-4 text-center text-red-300">
+    <strong>Avalanche Fuji Testnet 示范系统</strong> · 仅支持测试资产，无真实经济价值 · 非法定税务发票
+  </div>
+
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center font-bold text-white shadow-lg shadow-red-500/20">A</div>
+        <a href="index.html" class="font-bold text-lg tracking-tight hover:text-white">Avax Invoice</a>
+        <span class="badge-fuji text-[11px] px-2 py-0.5 rounded-full font-medium">Fuji 43113</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <nav class="hidden sm:flex space-x-2 text-sm">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">首页</a>
+          <a href="create.html" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">新建收款单</a>
+          <a href="dashboard.html" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">我的账单</a>
+        </nav>
+        <div id="walletBox">
+          <button id="connectBtn" class="btn-avax text-sm font-medium px-4 py-2 rounded-xl shadow-md">
+            连接钱包
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-4xl mx-auto px-4 py-12 flex flex-col items-center justify-center text-center">
+    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-400 mb-6">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+      <span>Avalanche 亚秒级结算 · 真实链上不可篡改凭证</span>
+    </div>
+    <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 text-white">
+      极速创建收款单，<br class="hidden sm:block" />
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">链上直达，秒级确认。</span>
+    </h1>
+    <p class="text-slate-400 text-base sm:text-lg max-w-2xl mb-8 leading-relaxed">
+      专为自由职业者与 Web3 创作者设计。无需中间托管，客户一键钱包支付，款项即刻直达您的私有地址，生成公开透明的链上回执。
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+      <a href="create.html" class="btn-avax font-medium px-6 py-3.5 rounded-xl text-base shadow-lg shadow-red-500/25 flex items-center justify-center space-x-2">
+        <span>新建第一笔收款</span>
+        <span>→</span>
+      </a>
+      <a href="dashboard.html" class="bg-slate-900 border border-slate-700 hover:bg-slate-800 font-medium px-6 py-3.5 rounded-xl text-base text-slate-200 transition flex items-center justify-center">
+        查看我的历史订单
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-16 text-left">
+      <div class="bg-slate-900/60 border border-slate-800/80 p-5 rounded-2xl">
+        <div class="w-10 h-10 rounded-xl bg-red-950 border border-red-800/40 flex items-center justify-center text-red-400 font-bold mb-3">01</div>
+        <h3 class="font-semibold text-white text-base mb-1">无资金滞留</h3>
+        <p class="text-slate-400 text-xs leading-relaxed">智能合约绝不沉淀资金，客户付款原子级实时转入您的地址，拒绝平台提现门槛与扣押风险。</p>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800/80 p-5 rounded-2xl">
+        <div class="w-10 h-10 rounded-xl bg-orange-950 border border-orange-800/40 flex items-center justify-center text-orange-400 font-bold mb-3">02</div>
+        <h3 class="font-semibold text-white text-base mb-1">严密支付校验</h3>
+        <p class="text-slate-400 text-xs leading-relaxed">严格遵循 Checks-Effects-Interactions 原则，拒绝错误金额与重复支付，16/16 单元测试充分验证。</p>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800/80 p-5 rounded-2xl">
+        <div class="w-10 h-10 rounded-xl bg-blue-950 border border-blue-800/40 flex items-center justify-center text-blue-400 font-bold mb-3">03</div>
+        <h3 class="font-semibold text-white text-base mb-1">链上独立对账</h3>
+        <p class="text-slate-400 text-xs leading-relaxed">每张收款单包含独立 ID、支付时间戳与付款人记录，支持 Snowtrace 区块链浏览器即时双向验真。</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-800/60 py-6 text-center text-xs text-slate-500">
+    Avax Invoice · Avalanche Buildathon 2026 参赛项目
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
