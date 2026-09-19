@@ -3,6 +3,8 @@
 ## 1. Tagline
 Avax Invoice: Sub-second non-custodial on-chain payment requests and immutable receipt verification on Avalanche.
 
+- **Demo Video (Release Asset)**: [Avax-Invoice-Demo.mp4](https://github.com/Lukeknow0/avax-invoice/releases/download/v1.0.0/Avax-Invoice-Demo.mp4) | [Release v1.0.0](https://github.com/Lukeknow0/avax-invoice/releases/tag/v1.0.0)
+
 ## 2. Problem Statement
 Freelancers, digital nomads, and independent Web3 contributors face a dilemma when requesting payments:
 - Traditional web2 payment platforms freeze accounts, charge 3-7% foreign exchange and processing fees, and enforce multi-day withdrawal holds.
