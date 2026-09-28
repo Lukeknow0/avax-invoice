@@ -13,6 +13,7 @@
 ---
 
 ## 已部署的 Fuji 演示
+- Buildathon Pitch Deck：[在线幻灯片](https://lukeknow0.github.io/avax-invoice/pitch/) ｜ [PDF 下载](https://lukeknow0.github.io/avax-invoice/pitch/assets/avax-invoice-pitch.pdf)
 - 演示视频：[Avax-Invoice-Demo.mp4 (Release v1.0.0)](https://github.com/Lukeknow0/avax-invoice/releases/tag/v1.0.0) ｜ [直接下载播放](https://github.com/Lukeknow0/avax-invoice/releases/download/v1.0.0/Avax-Invoice-Demo.mp4)
 - DApp：[Avax Invoice](https://lukeknow0.github.io/avax-invoice/)
 - 合约：[InvoiceRegistry on Snowtrace](https://testnet.snowtrace.io/address/0xBbF1Ff4085682F708e12B9c9b06EfbB268e78e05)

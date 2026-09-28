@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="Avax Invoice — non-custodial, verifiable payment requests on Avalanche Fuji.">
+  <title>Avax Invoice — Buildathon Pitch</title>
+  <link rel="stylesheet" href="./deck.css">
+</head>
+<body>
+  <main id="deck" aria-label="Avax Invoice pitch deck">
+    <section class="slide cover" aria-labelledby="s1-title">
+      <div class="topline"><span class="brand-mark">A</span><span>AVAX INVOICE</span><span class="topline-right">BUILDATHON 2026 · FUJI TESTNET</span></div>
+      <div class="cover-grid">
+        <div>
+          <p class="eyebrow"><i></i> NON-CUSTODIAL PAYMENTS</p>
+          <h1 id="s1-title">A payment request<br>that <em>settles on-chain.</em></h1>
+          <p class="lede">Create an invoice. Pay the exact amount. Verify the receipt on Avalanche.</p>
+          <div class="pill-row"><span>AVALANCHE FUJI</span><span>OPEN SOURCE</span><span>0.01 AVAX LIVE PROOF</span></div>
+        </div>
+        <div class="hero-art" aria-label="Illustration of an invoice settling directly on chain">
+          <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+          <div class="invoice-card"><div class="invoice-head"><b>INVOICE · #0001</b><span class="paid"><i></i> PAID</span></div><div class="amount">0.01 <small>AVAX</small></div><div class="rule"></div><div class="receipt-row"><span>NETWORK</span><b>FUJI · 43113</b></div><div class="receipt-row"><span>SETTLEMENT</span><b>ON-CHAIN ↗</b></div><div class="card-foot"><span>ATOMIC FORWARDING</span><span>↗ EXPLORER LINK</span></div></div>
+          <div class="chain-node node-left">CREATOR</div><div class="chain-node node-right">PAYER</div>
+        </div>
+      </div>
+      <div class="cover-footer"><span>Payments without a platform-held balance.</span><span>01 / 06</span></div>
+    </section>
+
+    <section class="slide" aria-labelledby="s2-title">
+      <div class="topline"><span class="brand-mark">A</span><span>THE PROBLEM</span><span class="topline-right">02 / 06</span></div>
+      <div class="slide-content problem-layout">
+        <div><p class="eyebrow">A SMALL, REAL FRICTION</p><h2 id="s2-title">Getting paid should not mean<br><em>giving up the receipt.</em></h2><p class="lede">Example workflow: a freelance Web3 contributor finishes a delivery, then needs a precise request; the client wants a receipt both can check.</p></div>
+        <div class="friction-list">
+          <article><span class="index">01</span><div><h3>Request clarity</h3><p>A payment link should carry a clear amount and a specific purpose.</p></div><span class="friction-tag">REQUEST</span></article>
+          <article><span class="index">02</span><div><h3>Settlement confidence</h3><p>Both parties should be able to check the result—not rely only on a platform status.</p></div><span class="friction-tag">SETTLE</span></article>
+          <article><span class="index">03</span><div><h3>Less custody</h3><p>A lightweight workflow should not require funds to sit in an intermediary balance.</p></div><span class="friction-tag">VERIFY</span></article>
+          <div class="note-line"><span class="note-dot"></span> Built for a focused workflow; no market-size claims.</div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>AVAX INVOICE · PRODUCT THESIS</span><span>02</span></div>
+    </section>
+
+    <section class="slide" aria-labelledby="s3-title">
+      <div class="topline"><span class="brand-mark">A</span><span>HOW IT WORKS</span><span class="topline-right">03 / 06</span></div>
+      <div class="slide-content">
+        <p class="eyebrow">A DIRECT PATH FROM REQUEST TO RECEIPT</p><h2 id="s3-title">One contract call.<br><em>One verifiable settlement.</em></h2>
+        <div class="flow">
+          <article class="flow-step"><span class="step-no">01</span><div class="step-icon">▤</div><h3>Create</h3><p>Creator sets an amount and publishes an invoice link.</p><span class="step-caption">INVOICE REGISTRY</span></article>
+          <div class="flow-arrow">→</div>
+          <article class="flow-step"><span class="step-no">02</span><div class="step-icon">↗</div><h3>Pay exact</h3><p>Payer confirms the specified native AVAX amount.</p><span class="step-caption">FUJI C-CHAIN</span></article>
+          <div class="flow-arrow">→</div>
+          <article class="flow-step highlighted"><span class="step-no">03</span><div class="step-icon">⇢</div><h3>Forward</h3><p>Contract marks paid and forwards funds atomically to creator.</p><span class="step-caption">NO PLATFORM CUSTODY</span></article>
+          <div class="flow-arrow">→</div>
+          <article class="flow-step"><span class="step-no">04</span><div class="step-icon">⌕</div><h3>Verify</h3><p>Both sides can inspect the immutable chain record.</p><span class="step-caption">PUBLIC EXPLORER</span></article>
+        </div>
+        <div class="mechanism-note"><b>Same-transaction forwarding</b><span>State updates before transfer. Funds are not held in an intermediate platform balance between transactions; a failed transfer reverts the whole transaction.</span><a href="https://github.com/Lukeknow0/avax-invoice" target="_blank" rel="noreferrer">Review source ↗</a></div>
+      </div>
+      <div class="slide-footer"><span>AVAX INVOICE · MECHANISM</span><span>03</span></div>
+    </section>
+
+    <section class="slide" aria-labelledby="s4-title">
+      <div class="topline"><span class="brand-mark">A</span><span>FUJI TESTNET EVIDENCE</span><span class="topline-right">04 / 06</span></div>
+      <div class="slide-content evidence-layout">
+        <div><p class="eyebrow">RECORDED FUJI TESTNET WALKTHROUGH</p><h2 id="s4-title">A receipt you can<br><em>open and inspect.</em></h2><p class="lede">Invoice #1 · 0.01 AVAX · Avalanche Fuji C-Chain (43113). Hashes are provided for independent inspection; this deck does not claim an independent explorer re-check.</p>
+          <div class="proof-links"><a href="https://testnet.snowtrace.io/tx/0xdbd31002683320b9e39507f345bd34139afbf28239fe90ebe23fb65c2bde6555" target="_blank" rel="noreferrer"><span>01</span><b>Invoice creation transaction</b><i>↗</i></a><a href="https://testnet.snowtrace.io/tx/0x136099029a0df4ed7d3321eee25db33985590c05493114ca431817b367bf3cd6" target="_blank" rel="noreferrer"><span>02</span><b>Payment transaction</b><i>↗</i></a><a href="https://testnet.snowtrace.io/address/0xBbF1Ff4085682F708e12B9c9b06EfbB268e78e05" target="_blank" rel="noreferrer"><span>03</span><b>InvoiceRegistry contract</b><i>↗</i></a></div>
+        </div>
+        <div class="evidence-panel"><div class="panel-top"><span>SETTLEMENT RECORD</span><span class="verified"><i></i> FUJI</span></div><div class="panel-amount">0.01 <small>AVAX</small></div><div class="panel-state"><span class="state-check">✓</span><div><b>Paid</b><small>Invoice #1 · C-Chain 43113</small></div></div><div class="panel-data"><span>CONTRACT</span><code>0xBbF1…8e05</code></div><div class="panel-data"><span>PAYMENT TX</span><code>0x1360…3cd6</code></div><div class="panel-foot">TESTNET ASSET · NO REAL ECONOMIC VALUE</div></div>
+        <aside class="evidence-caveat"><b>Proof boundary</b><span>The published demo used the same funded test wallet as creator and payer. It proves the contract flow—not independent two-user adoption.</span></aside>
+      </div>
+      <div class="slide-footer"><span>CLICK ANY EVIDENCE ROW TO VERIFY</span><span>04</span></div>
+    </section>
+
+    <section class="slide" aria-labelledby="s5-title">
+      <div class="topline"><span class="brand-mark">A</span><span>TRY THE PRODUCT</span><span class="topline-right">05 / 06</span></div>
+      <div class="slide-content product-layout">
+        <div><p class="eyebrow">A SMALL, RUNNABLE PROTOTYPE</p><h2 id="s5-title">From invoice page<br>to <em>chain receipt.</em></h2><p class="lede">Open the hosted Fuji demo, inspect the code, or use the recorded walkthrough as a fallback.</p>
+          <div class="product-links"><a class="primary-link" href="https://lukeknow0.github.io/avax-invoice/" target="_blank" rel="noreferrer"><span>OPEN THE DAPP</span><b>↗</b></a><a href="https://github.com/Lukeknow0/avax-invoice" target="_blank" rel="noreferrer"><span>Source code</span><b>↗</b></a><a href="https://github.com/Lukeknow0/avax-invoice/releases/tag/v1.0.0" target="_blank" rel="noreferrer"><span>Recorded demo · fallback</span><b>↗</b></a></div>
+        </div>
+        <div class="browser-mock"><div class="browser-bar"><div class="window-dots"><i></i><i></i><i></i></div><span>lukeknow0.github.io / avax-invoice</span><span class="lock">FUJI · 43113</span></div><div class="mock-body"><div class="mock-brand"><span class="brand-mark">A</span><b>Avax Invoice</b><span>INVOICE PROTOCOL</span></div><div class="mock-heading">Payment,<br><em>with proof.</em></div><div class="mock-copy">Illustrative product view · payment request + on-chain receipt, not a legal invoice.</div><div class="mock-actions"><span>CREATE INVOICE ↗</span><span>VIEW CHAIN RECORD</span></div><div class="mock-receipt"><span>RECENT RECEIPT</span><b>0.01 AVAX <i>PAID</i></b><small>FUJI C-CHAIN · INVOICE #1</small></div></div></div>
+      </div>
+      <div class="slide-footer"><span>RECORDED VIDEO IS A FALLBACK, NOT A LIVE SESSION</span><span>05</span></div>
+    </section>
+
+    <section class="slide final" aria-labelledby="s6-title">
+      <div class="topline"><span class="brand-mark">A</span><span>WHAT'S NEXT</span><span class="topline-right">06 / 06</span></div>
+      <div class="slide-content final-layout"><div><p class="eyebrow">HONEST SCOPE · CLEAR NEXT STEP</p><h2 id="s6-title">A focused prototype.<br><em>Ready for a two-wallet test.</em></h2><p class="lede">Next: validate the creator-to-payer journey with two independent wallets, then test usability and operational safeguards. Current demo is a single-wallet flow.</p><div class="next-pills"><span>1 · TWO-WALLET WALKTHROUGH</span><span>2 · EDGE-CASE REVIEW</span><span>3 · USER FEEDBACK</span></div></div>
+        <div class="scope-card"><div class="scope-head">CURRENT SCOPE & LIMITATIONS</div><div class="scope-row"><i class="scope-ok">✓</i><div><b>Fuji testnet only</b><small>Chain ID 43113</small></div></div><div class="scope-row"><i class="scope-ok">✓</i><div><b>Non-custodial transfer flow</b><small>Native AVAX forwards to creator</small></div></div><div class="scope-row"><i class="scope-warn">!</i><div><b>Payment request + receipt—not a legal invoice</b><small>Test assets have no real economic value</small></div></div><div class="scope-row"><i class="scope-warn">!</i><div><b>No refund, cancel, or expiry flow</b><small>No descriptions/due dates; native AVAX only, no ERC-20</small></div></div><div class="scope-row"><i class="scope-warn">!</i><div><b>Prototype, not production infrastructure</b><small>Published proof is single-wallet; multi-user validation remains future work</small></div></div><a class="contract-link" href="https://testnet.snowtrace.io/address/0xBbF1Ff4085682F708e12B9c9b06EfbB268e78e05" target="_blank" rel="noreferrer">CONTRACT ON SNOWTRACE ↗</a></div>
+      </div>
+      <div class="closing-line"><span>AVAX INVOICE</span><span>Request · settle · verify</span><a href="https://lukeknow0.github.io/avax-invoice/" target="_blank" rel="noreferrer">TRY THE FUJI DEMO ↗</a></div>
+    </section>
+  </main>
+  <nav class="deck-controls" aria-label="Slide navigation"><button id="prev" type="button" aria-label="Previous slide">←</button><span id="counter" aria-live="polite">01 / 06</span><button id="next" type="button" aria-label="Next slide">→</button><a id="download-pdf" href="./assets/avax-invoice-pitch.pdf" download>DOWNLOAD PDF ↓</a><button id="print" type="button" aria-label="Print or save deck as PDF">PRINT</button></nav>
+  <script>
+    (() => {
+      const slides = [...document.querySelectorAll('.slide')];
+      const counter = document.querySelector('#counter');
+      let current = 0;
+      function show(index, updateHash = true) {
+        current = (index + slides.length) % slides.length;
+        slides.forEach((slide, i) => { slide.classList.toggle('active', i === current); slide.setAttribute('aria-hidden', i === current ? 'false' : 'true'); });
+        counter.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+        if (updateHash) history.replaceState(null, '', `#${current + 1}`);
+      }
+      document.querySelector('#prev').addEventListener('click', () => show(current - 1));
+      document.querySelector('#next').addEventListener('click', () => show(current + 1));
+      document.querySelector('#print').addEventListener('click', () => window.print());
+      document.addEventListener('keydown', event => {
+        if (['ArrowRight', ' ', 'PageDown'].includes(event.key)) { event.preventDefault(); show(current + 1); }
+        if (['ArrowLeft', 'PageUp'].includes(event.key)) { event.preventDefault(); show(current - 1); }
+        if (event.key === 'Home') show(0);
+        if (event.key === 'End') show(slides.length - 1);
+      });
+      const fromHash = Number(location.hash.slice(1));
+      show(Number.isInteger(fromHash) && fromHash > 0 && fromHash <= slides.length ? fromHash - 1 : 0, false);
+    })();
+  </script>
+</body>
+</html>
